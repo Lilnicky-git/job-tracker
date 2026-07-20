@@ -5,3 +5,8 @@
 .DS_Store
 Tumbs.db
 
+# Local SQLite database generated form schema.sql
+tracker.db
+
+# Dependency folder regenerated via ipm install
+node_models/
