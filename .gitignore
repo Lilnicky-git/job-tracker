@@ -8,5 +8,8 @@ Thumbs.db
 # Local SQLite database generated from schema.sql
 tracker.db
 
-# Dependency folder regenerated via npm install
-node_modules/
+# Python cache
+__pycache__/
+
+# Virtual environment
+venv/
