@@ -1,0 +1,7 @@
+# Secrets - Never commit these
+.env
+
+# OS junk files
+.DS_Store
+Tumbs.db
+
