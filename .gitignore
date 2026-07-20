@@ -3,10 +3,10 @@
 
 # OS junk files
 .DS_Store
-Tumbs.db
+Thumbs.db
 
-# Local SQLite database generated form schema.sql
+# Local SQLite database generated from schema.sql
 tracker.db
 
-# Dependency folder regenerated via ipm install
-node_models/
+# Dependency folder regenerated via npm install
+node_modules/
