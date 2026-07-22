@@ -11,10 +11,13 @@ not a production tool.
 Database schema designed and reviewed (six related tables: companies,
 postings, requirements, applications, tasks, communications) and
 version-controlled in `schema.sql`. A local SQLite database has been
-built from that schema using a small Python script (`init_db.py`).
+built from that schema using a small Python script (`init_db.py`). 
+Sample data has been created in `seed_data.py` to populate the database.  
 
 A learning log has been created within a Claude.ai project relating to
 this project. This tracks specific moments where a decision or mistake
 brings up teaching points. This is kept separate from the repo itself.
 
-Next: populate the database with data, then build the MCP server layer.
+
+
+Next: build the MCP server layer.
