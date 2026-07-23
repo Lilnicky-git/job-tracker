@@ -71,5 +71,19 @@ def save_posting(
     return {"posting_id": cursor.lastrowid}
 
 
+@mcp.tool()
+def log_application(posting_id: int, notes: str = "") -> dict:
+    """Log an application to a saved posting and mark that posting as matched."""
+    cursor = db.cursor()
+    cursor.execute(
+        "INSERT INTO applications (posting_id, date_applied, stage, notes) VALUES (?, date('now'), 'applied', ?)",
+        (posting_id, notes),
+    )
+    application_id = cursor.lastrowid
+    cursor.execute("UPDATE postings SET status = 'matched' WHERE id = ?", (posting_id,))
+    db.commit()
+    return {"application_id": application_id}
+
+
 if __name__ == "__main__":
     mcp.run()
