@@ -1,16 +1,18 @@
 import os
 import sqlite3
+from pathlib import Path
 
 import requests
 from dotenv import load_dotenv
 from mcp.server.fastmcp import FastMCP
 
-load_dotenv()
+BASE_DIR = Path(__file__).parent
+load_dotenv(BASE_DIR / ".env")
 
 ADZUNA_APP_ID = os.environ["ADZUNA_APP_ID"]
 ADZUNA_APP_KEY = os.environ["ADZUNA_APP_KEY"]
 
-db = sqlite3.connect("tracker.db", check_same_thread=False)
+db = sqlite3.connect(BASE_DIR / "tracker.db", check_same_thread=False)
 db.execute("PRAGMA foreign_keys = ON")
 
 mcp = FastMCP("job-tracker")
