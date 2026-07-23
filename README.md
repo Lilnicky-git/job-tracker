@@ -1,6 +1,6 @@
 # Job Hunt Tracker
 
-A personal practice project that will help me learn how to use a common
+A personal practice project using Claude.ai and Code that will help me learn how to use a common
 real data architecture pattern: an API layer, an MCP server, a database, and an AI agent, all working together.
 
 This project is a way to learn how these pieces connect,
