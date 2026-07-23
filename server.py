@@ -85,5 +85,61 @@ def log_application(posting_id: int, notes: str = "") -> dict:
     return {"application_id": application_id}
 
 
+@mcp.tool()
+def log_communication(
+    application_id: int,
+    type: str,
+    direction: str,
+    summary: str,
+    follow_up_required: bool = False,
+) -> dict:
+    """Log a communication for an application. If a follow-up is required, automatically creates a linked task."""
+    cursor = db.cursor()
+    cursor.execute(
+        """INSERT INTO communications (application_id, date, type, direction, summary, follow_up_required)
+           VALUES (?, date('now'), ?, ?, ?, ?)""",
+        (application_id, type, direction, summary, follow_up_required),
+    )
+    communication_id = cursor.lastrowid
+
+    if follow_up_required:
+        cursor.execute(
+            """INSERT INTO tasks (application_id, type, due_date, status, notes)
+               VALUES (?, 'follow_up', date('now', '+7 days'), 'open', ?)""",
+            (application_id, f"Follow up on: {summary}"),
+        )
+        task_id = cursor.lastrowid
+        cursor.execute(
+            "UPDATE communications SET related_task_id = ? WHERE id = ?",
+            (task_id, communication_id),
+        )
+
+    db.commit()
+    return {"communication_id": communication_id}
+
+
+@mcp.tool()
+def list_open_tasks() -> list[dict]:
+    """List all open tasks, ordered by due date."""
+    cursor = db.cursor()
+    cursor.execute(
+        """SELECT tasks.id, tasks.application_id, tasks.type, tasks.due_date, tasks.notes
+           FROM tasks
+           WHERE tasks.status = 'open'
+           ORDER BY tasks.due_date"""
+    )
+    columns = [description[0] for description in cursor.description]
+    return [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+
+@mcp.tool()
+def mark_task_complete(task_id: int) -> dict:
+    """Mark a task as complete."""
+    cursor = db.cursor()
+    cursor.execute("UPDATE tasks SET status = 'complete' WHERE id = ?", (task_id,))
+    db.commit()
+    return {"task_id": task_id, "status": "complete"}
+
+
 if __name__ == "__main__":
     mcp.run()
