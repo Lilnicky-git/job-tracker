@@ -143,5 +143,36 @@ def mark_task_complete(task_id: int) -> dict:
     return {"task_id": task_id, "status": "complete"}
 
 
+@mcp.tool()
+def list_postings() -> list[dict]:
+    """List all saved job postings, including company name and status."""
+    cursor = db.cursor()
+    cursor.execute(
+        """SELECT postings.id, companies.name AS company, postings.title, postings.location,
+                  postings.salary_min, postings.salary_max, postings.status, postings.date_found
+           FROM postings
+           JOIN companies ON postings.company_id = companies.id
+           ORDER BY postings.date_found DESC"""
+    )
+    columns = [description[0] for description in cursor.description]
+    return [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+
+@mcp.tool()
+def list_applications() -> list[dict]:
+    """List all applications, including the associated posting title, company, and current stage."""
+    cursor = db.cursor()
+    cursor.execute(
+        """SELECT applications.id, companies.name AS company, postings.title,
+                  applications.stage, applications.date_applied, applications.notes
+           FROM applications
+           JOIN postings ON applications.posting_id = postings.id
+           JOIN companies ON postings.company_id = companies.id
+           ORDER BY applications.date_applied DESC"""
+    )
+    columns = [description[0] for description in cursor.description]
+    return [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+
 if __name__ == "__main__":
     mcp.run()
